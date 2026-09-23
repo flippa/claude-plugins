@@ -1,0 +1,16 @@
+{
+  "name": "flippa",
+  "owner": {
+    "name": "Flippa Platform"
+  },
+  "plugins": [
+    {
+      "name": "superset-mcp",
+      "source": "./plugins/superset-mcp",
+      "description": "Connects Claude Code to Flippa's Superset MCP server as your own Superset user"
+    }
+  ],
+  "metadata": {
+    "description": "Flippa's internal Claude Code plugins"
+  }
+}

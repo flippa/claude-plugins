@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "superset": {
+      "type": "http",
+      "url": "https://superset-mcp.in.flippa.com/mcp",
+      "headersHelper": "\"${CLAUDE_PLUGIN_ROOT}/scripts/headers.sh\" https://superset-mcp.in.flippa.com"
+    }
+  }
+}

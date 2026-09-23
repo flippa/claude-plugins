@@ -1,0 +1,8 @@
+{
+  "name": "superset-mcp",
+  "version": "1.0.0",
+  "description": "Connects Claude Code to Flippa's Superset MCP server as your own Superset user, signed in through Cloudflare Access",
+  "author": {
+    "name": "Flippa Platform"
+  }
+}
