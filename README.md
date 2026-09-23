@@ -8,13 +8,17 @@ Internal plugin marketplace for Claude Code.
 
 ## Install
 
-Most people get these through the Flippa Claude organization and need no GitHub
-access. With read access to this repo, you can also install by hand:
+In Claude Code (no GitHub account needed):
 
 ```
 /plugin marketplace add flippa/claude-plugins
 /plugin install superset-mcp@flippa
 ```
+
+Update later with `claude plugin marketplace update flippa`.
+
+This repo is public: never commit secrets, tokens or credentials. The plugins
+authenticate each person through their own sign-in instead.
 
 ## Adding a plugin
 
