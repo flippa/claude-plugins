@@ -5,6 +5,7 @@ Internal plugin marketplace for Claude Code.
 | Plugin | What it does |
 |---|---|
 | `superset-mcp` | Connects Claude Code to Superset's MCP server as your own Superset user, signed in through Cloudflare Access. After installing, ask Claude to "set me up with Superset". |
+| `metabase-mcp` | Connects Claude Code to Metabase's built-in MCP server as your own Metabase user. After installing, ask Claude to "set me up with Metabase". |
 
 ## Install
 
@@ -13,6 +14,7 @@ In Claude Code (no GitHub account needed):
 ```
 /plugin marketplace add flippa/claude-plugins
 /plugin install superset-mcp@flippa
+/plugin install metabase-mcp@flippa
 ```
 
 Update later with `claude plugin marketplace update flippa`.

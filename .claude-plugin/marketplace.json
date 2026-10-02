@@ -8,6 +8,11 @@
       "name": "superset-mcp",
       "source": "./plugins/superset-mcp",
       "description": "Connects Claude Code to Flippa's Superset MCP server as your own Superset user"
+    },
+    {
+      "name": "metabase-mcp",
+      "source": "./plugins/metabase-mcp",
+      "description": "Connects Claude Code to Flippa's Metabase MCP server as your own Metabase user"
     }
   ],
   "metadata": {

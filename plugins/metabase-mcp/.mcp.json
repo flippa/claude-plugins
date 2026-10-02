@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "metabase": {
+      "type": "http",
+      "url": "https://metabase.in.flippa.com/api/metabase-mcp"
+    }
+  }
+}

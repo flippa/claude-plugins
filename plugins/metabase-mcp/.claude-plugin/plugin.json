@@ -1,0 +1,8 @@
+{
+  "name": "metabase-mcp",
+  "version": "1.0.0",
+  "description": "Connects Claude Code to Flippa's Metabase MCP server as your own Metabase user",
+  "author": {
+    "name": "Flippa Platform"
+  }
+}
