@@ -7,46 +7,50 @@ description: Connect Claude Code to Flippa's Superset MCP server (superset-mcp.i
 
 Flippa's Superset exposes an MCP server. Tools run **as the user's own Superset
 account**, identified by their Cloudflare Access (Google @flippa.com) sign-in. There
-is no shared password or API key to hand out.
+is no shared password or API key to hand out, and nothing to install.
 
 ## Set up
 
 This skill ships in the `superset-mcp` plugin, which **already registers the
-production server** (`plugin:superset-mcp:superset`). What a new user is missing is
-`cloudflared` and an Access sign-in. Run the bundled script from this skill's
-directory. It is idempotent, so it is safe to re-run:
+production server** (`plugin:superset-mcp:superset`). Sign-in is standard MCP OAuth,
+served by Cloudflare Access. Tell the user to:
+
+1. Run `/mcp`, select **superset** (`plugin:superset-mcp:superset`), choose **Authenticate**.
+2. Complete the Google @flippa.com sign-in in the browser that opens. It ends on a
+   localhost page confirming success.
+
+Then call `get_instance_info` and report who the server thinks they are, and their
+roles. Claude Code refreshes the token in the background; a new browser sign-in is
+needed about every two weeks.
+
+Staging, or outside the plugin:
 
 ```sh
-bash <this skill's directory>/scripts/setup.sh            # production
-bash <this skill's directory>/scripts/setup.sh --staging  # staging, registered as "superset-staging"
+claude mcp add --transport http -s user superset-staging https://superset-mcp.in.staging.flippa.com/mcp
+claude mcp add --transport http -s user superset https://superset-mcp.in.flippa.com/mcp
 ```
 
-It prints ✔/✘ for each of five steps:
-
-1. Installs `cloudflared` with Homebrew if missing.
-2. Checks the `claude` CLI is on PATH.
-3. Signs in to Cloudflare Access. **This opens a browser.** Tell the user to
-   complete the Google sign-in there before you run it, because the script waits for it.
-4. Calls `get_instance_info` and prints who the server thinks they are, and their roles.
-5. Confirms the plugin's server is connected. Outside the plugin, or for staging,
-   it registers the server at user scope instead.
-
-Then tell the user to **run `/mcp` and reconnect `superset`, or restart Claude
-Code**. The first connection before sign-in fails, and Claude Code does not retry
-it on its own.
+then `/mcp` → Authenticate as above.
 
 ## Troubleshoot
 
-Run `setup.sh --check` first. It diagnoses without changing anything. What the
-failures mean:
+`claude mcp get <name>` shows "Needs authentication" until the user authenticates
+from the interactive `/mcp` menu; the CLI cannot start the sign-in.
 
 | Symptom | Meaning | Fix |
 |---|---|---|
-| ✘ no valid token / HTTP 401/302, or `/mcp` shows "Unexpected content type: text/html" | no Access session (Access served its login page) | re-run `setup.sh` |
+| "Needs authentication", or HTTP 401 | no token, or the ~2-week grant expired | `/mcp` → superset → Authenticate |
+| Sign-in page denies them | not in the "Flippa Employees" Access group | platform team |
 | HTTP 403 | Access admitted them, Superset refused the identity (non-@flippa.com account) | platform team checks the `superset-mcp` pod log, `superset.mcp_service.identity` |
-| `/mcp` shows the server failed right after the token expired | the helper opened a browser, but Claude Code gives helpers only 10s | finish the sign-in, then `/mcp` → reconnect |
 | Tool call returns an `Error ID: err_...` | arguments not wrapped | tools take `{"request": {...}}`; see below |
 | Listings come back empty | their role cannot see that content | see Access below |
+
+To check the server side is up without signing in, an unauthenticated request should
+get a 401 pointing at OAuth metadata:
+
+```sh
+curl -s -o /dev/null -D - -X POST https://superset-mcp.in.flippa.com/mcp | grep -i -E '^HTTP|www-authenticate'
+```
 
 ## Access
 
@@ -64,8 +68,3 @@ change.
   unfiltered number while reporting success.
 - MCP can create datasets and charts but cannot edit dataset metrics or column
   descriptions. That curation happens in the Superset UI.
-
-## Scope
-
-Claude Code only. Claude Desktop and claude.ai cannot run the token helper, so this
-setup does not apply to them.
